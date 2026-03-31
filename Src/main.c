@@ -64,6 +64,7 @@ int main(void)
     while (1) 
     {
 
+
     	/*------ Practica 1 ------*//*
     	GPIO_STM32.rgb.r_on();
     	GPIO_STM32.rgb.g_off();		//Rojo
@@ -99,6 +100,16 @@ int main(void)
 			GPIO_STM32.rgb.r_on();  // Encender LED Rojo
 		} else {
 			GPIO_STM32.rgb.r_off(); // Apagar LED Rojo
+		}
+    	if (GPIO_STM32.btn.btn_1()) {
+			GPIO_STM32.rgb.g_on();  // Encender LED Rojo
+		} else {
+			GPIO_STM32.rgb.g_off(); // Apagar LED Rojo
+		}
+    	if (GPIO_STM32.btn.btn_2()) {
+			GPIO_STM32.rgb.b_on();  // Encender LED Rojo
+		} else {
+			GPIO_STM32.rgb.b_off(); // Apagar LED Rojo
 		}
 
 		// Antirrebote (Debounce) simple
@@ -171,7 +182,7 @@ void clear_fault_flags(void)
 }
 void TIM4_IRQHandler(void)
 {
-    GPIO_STM32.rgb.r_toggle();//GPIO_STM32.rgb.r_on();
+    //GPIO_STM32.rgb.r_toggle();//GPIO_STM32.rgb.r_on();
     uint8_t i = 0;
     if (TIM4->SR & TIM_SR_UIF) 
     { 
