@@ -42,8 +42,8 @@
 #define READ_BUTTON_4  (GPIOC->IDR & (1U << 4))	// PC4
 
 void TFT_ctrl_gpio_init(void);
-//void GPIOB_Init_PB12_13_14_Output(void);
-void GPIOB_Init_RGB_PWM_Output(void); //PWM en leds
+void GPIOB_Init_PB12_13_14_Output(void);
+//void GPIOB_Init_RGB_PWM_Output(void); //PWM en leds
 void gpio_pa2_pa3_output_init(void);
 void gpio_pc0_pc1_pc2_pc3_pc4_init(void);
 

@@ -46,7 +46,8 @@ int main(void)
     clear_fault_flags();
     FPU_Enable();
     uint8_t aumento_vel = 0;
-    //uint8_t secuencia = 0;
+    uint8_t estado = 0;
+    uint8_t patron_elegido = 0;
 
     SYSCLK_STM32.init();
     ini_pantalla();
@@ -97,17 +98,24 @@ int main(void)
     	GPIO_STM32.rgb.b_on();
     	SYSCLK_STM32.delay_ms(1000); //Delay de 500ms
 		*/
-    	/*------ Practica 2 ------*/
-    	if (AntiRebote(GPIO_STM32.btn.btn_0)) {
+    	/*------ Practica 2 ------*//*
+    	if (AntiRebote(GPIO_STM32.btn.btn_4)) {
 			GPIO_STM32.rgb.r_on();
 		} else {
 			GPIO_STM32.rgb.r_off();
+		}
+    	if (AntiRebote(GPIO_STM32.btn.btn_3)) {
+			GPIO_STM32.rgb.g_on();
+		} else {
+			GPIO_STM32.rgb.g_off();
 		}
     	if (AntiRebote(GPIO_STM32.btn.btn_2)) {
 			GPIO_STM32.rgb.b_on();
 		} else {
 			GPIO_STM32.rgb.b_off();
 		}
+		*/
+    	/*------ Practica 3 ------*//*
     	PWM_STM32.motor.set_duty_permille(g_motor.d);
 		if (aumento_vel == 0) {
 			g_motor.d = g_motor.d + 1;
@@ -122,6 +130,69 @@ int main(void)
 			aumento_vel = 0;
 		}
 		SYSCLK_STM32.delay_ms(10);
+		*/
+
+    	/*------ Practica 4 ------*/
+    	if (AntiRebote(GPIO_STM32.btn.btn_0)) {
+    		while(GPIO_STM32.btn.btn_0());
+    		estado = 1;
+    	}
+		if (AntiRebote(GPIO_STM32.btn.btn_4)) {
+			estado = 0;
+		}
+    	switch (estado) {
+			case 0:
+				GPIO_STM32.rgb.r_toggle();
+				GPIO_STM32.rgb.g_off();
+				GPIO_STM32.rgb.b_off();
+				SYSCLK_STM32.delay_ms(400);
+				break;
+			case 1:
+				GPIO_STM32.rgb.r_off();
+				if (AntiRebote(GPIO_STM32.btn.btn_1)) patron_elegido = 1;
+				if (AntiRebote(GPIO_STM32.btn.btn_2)) patron_elegido = 2;
+				if (AntiRebote(GPIO_STM32.btn.btn_3)) patron_elegido = 3;
+
+				if (AntiRebote(GPIO_STM32.btn.btn_0)) {	//Confirmacion
+					while(GPIO_STM32.btn.btn_0());
+					estado = 2;
+					break;
+				}
+
+				if (AntiRebote(GPIO_STM32.btn.btn_4)) {	//Cancelado
+					while(GPIO_STM32.btn.btn_4());
+					estado = 0;
+					break;
+				}
+
+				switch (patron_elegido) {
+					case 0: GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.g_off(); SYSCLK_STM32.delay_ms(100);
+							GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.g_off();break;
+					case 1: GPIO_STM32.rgb.r_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.r_off(); SYSCLK_STM32.delay_ms(100); break;
+					case 2: GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.g_off(); SYSCLK_STM32.delay_ms(100); break;
+					case 3: GPIO_STM32.rgb.b_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.b_off(); SYSCLK_STM32.delay_ms(100); break;
+				}
+				SYSCLK_STM32.delay_ms(400);
+				break;
+
+			case 2: // MODO EJECUCIÓN INFINITA
+				GPIO_STM32.rgb.r_off();
+				GPIO_STM32.rgb.g_off();
+				GPIO_STM32.rgb.b_off();
+				// Aquí ejecutas el patron_elegido sin el parpadeo verde
+				switch (patron_elegido) {
+					case 1: GPIO_STM32.rgb.r_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.r_off(); SYSCLK_STM32.delay_ms(100); break;
+					case 2: GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.g_off(); SYSCLK_STM32.delay_ms(100); break;
+					case 3: GPIO_STM32.rgb.b_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.b_off(); SYSCLK_STM32.delay_ms(100); break;
+				}
+
+				// Botón 4 para detener y volver a 0
+				if (AntiRebote(GPIO_STM32.btn.btn_4)) {
+					while(GPIO_STM32.btn.btn_4());
+					estado = 0;
+				}
+				break;
+    	}
 
     	/*
         GPIO_STM32.motor.right();
