@@ -1,5 +1,6 @@
-../Src/main.c:41:5:main	4
-../Src/main.c:159:6:ini_pantalla	1
-../Src/main.c:171:6:FPU_Enable	1
-../Src/main.c:177:6:clear_fault_flags	1
-../Src/main.c:183:6:TIM4_IRQHandler	12
+../Src/main.c:43:5:main	4
+../Src/main.c:161:5:AntiRebote	3
+../Src/main.c:179:6:ini_pantalla	1
+../Src/main.c:191:6:FPU_Enable	1
+../Src/main.c:197:6:clear_fault_flags	1
+../Src/main.c:203:6:TIM4_IRQHandler	12

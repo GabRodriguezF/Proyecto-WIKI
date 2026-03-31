@@ -33,6 +33,8 @@ uint8_t cont_multtimer = 0;
 uint8_t flag_cMotor = 0;
 uint32_t intentos = 0;
 
+int AntiRebote(gpio_btn_read_fn_t leer_btn);
+
 
 void FPU_Enable(void);
 void clear_fault_flags(void);
@@ -43,7 +45,7 @@ int main(void)
     // Locales de arranque
     clear_fault_flags();
     FPU_Enable();
-    uint8_t aumento_vel = 0;
+    //uint8_t aumento_vel = 0;
     //uint8_t secuencia = 0;
 
     SYSCLK_STM32.init();
@@ -96,24 +98,21 @@ int main(void)
     	SYSCLK_STM32.delay_ms(1000); //Delay de 500ms
 		*/
     	/*------ Practica 2 ------*/
-    	if (GPIO_STM32.btn.btn_0()) {
-			GPIO_STM32.rgb.r_on();  // Encender LED Rojo
+    	if (AntiRebote(GPIO_STM32.btn.btn_0)) {
+			GPIO_STM32.rgb.r_on();
 		} else {
-			GPIO_STM32.rgb.r_off(); // Apagar LED Rojo
+			GPIO_STM32.rgb.r_off();
 		}
-    	if (GPIO_STM32.btn.btn_1()) {
-			GPIO_STM32.rgb.g_on();  // Encender LED Rojo
+    	if (AntiRebote(GPIO_STM32.btn.btn_1)) {
+			GPIO_STM32.rgb.g_on();
 		} else {
-			GPIO_STM32.rgb.g_off(); // Apagar LED Rojo
+			GPIO_STM32.rgb.g_off();
 		}
-    	if (GPIO_STM32.btn.btn_2()) {
-			GPIO_STM32.rgb.b_on();  // Encender LED Rojo
+    	if (AntiRebote(GPIO_STM32.btn.btn_2)) {
+			GPIO_STM32.rgb.b_on();
 		} else {
-			GPIO_STM32.rgb.b_off(); // Apagar LED Rojo
+			GPIO_STM32.rgb.b_off();
 		}
-
-		// Antirrebote (Debounce) simple
-		SYSCLK_STM32.delay_ms(10);
 
     	/*
         GPIO_STM32.motor.right();
@@ -156,6 +155,24 @@ int main(void)
 
     }
 }
+int AntiRebote(gpio_btn_read_fn_t leer_btn)
+{
+    // El botón parece estar presionado
+    if (leer_btn() == 1)
+    {
+        // 2. Esperamos 20ms
+        SYSCLK_STM32.delay_ms(20);
+
+        // Sigue presionado?
+        if (leer_btn() == 1)
+        {
+            return 1; //Real
+        }
+    }
+
+    return 0; // Ruido
+}
+
 void ini_pantalla(void)
 {
     GPIO_STM32.tft.init();
