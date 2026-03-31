@@ -45,7 +45,7 @@ int main(void)
     // Locales de arranque
     clear_fault_flags();
     FPU_Enable();
-    //uint8_t aumento_vel = 0;
+    uint8_t aumento_vel = 0;
     //uint8_t secuencia = 0;
 
     SYSCLK_STM32.init();
@@ -103,16 +103,25 @@ int main(void)
 		} else {
 			GPIO_STM32.rgb.r_off();
 		}
-    	if (AntiRebote(GPIO_STM32.btn.btn_1)) {
-			GPIO_STM32.rgb.g_on();
-		} else {
-			GPIO_STM32.rgb.g_off();
-		}
     	if (AntiRebote(GPIO_STM32.btn.btn_2)) {
 			GPIO_STM32.rgb.b_on();
 		} else {
 			GPIO_STM32.rgb.b_off();
 		}
+    	PWM_STM32.motor.set_duty_permille(g_motor.d);
+		if (aumento_vel == 0) {
+			g_motor.d = g_motor.d + 1;
+		}
+		if (aumento_vel == 1) {
+			g_motor.d = g_motor.d - 1;
+		}
+		if (g_motor.d >= 999) {
+			aumento_vel = 1;
+		}
+		if (g_motor.d <= 200) {
+			aumento_vel = 0;
+		}
+		SYSCLK_STM32.delay_ms(10);
 
     	/*
         GPIO_STM32.motor.right();

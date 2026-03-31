@@ -64,6 +64,29 @@ void GPIOB_Init_PB12_13_14_Output(void)
                       (3U << (13U*2U)) |
                       (3U << (14U*2U)));
 }
+
+void GPIOB_Init_RGB_PWM_Output(void)
+{
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+    (void)RCC->AHB1ENR;   // lectura dummy para asegurar el habilitado
+
+    // 1. Limpiar MODER para PB12, PB13, PB14
+    GPIOB->MODER &= ~((3U << (12*2)) | (3U << (13*2)) | (3U << (14*2)));
+
+    // 2. PB12 y PB14 siguen como Salida (01)
+    // 3. PB13 cambia a Función Alterna (10)
+    GPIOB->MODER |=  ((1U << (12*2)) | (2U << (13*2)) | (1U << (14*2)));
+
+    // 4. Configurar PB13 específicamente para AF1 (TIM1_CH1N)
+    // AFR[1] controla los pines 8-15. PB13 es el índice 5 en AFR[1]
+    GPIOB->AFR[1] &= ~(0xFU << (5*4));
+    GPIOB->AFR[1] |=  (0x1U << (5*4)); // AF1 = TIM1
+
+    // 5. El resto (Push-Pull, Speed) se mantiene igual para los 3 pines
+    GPIOB->OSPEEDR |= ((1U << (12*2)) | (1U << (13*2)) | (1U << (14*2)));
+    GPIOB->OTYPER  &= ~((1U << 12) | (1U << 13) | (1U << 14));
+}
+
 void gpio_pa2_pa3_output_init(void)
 {
     /* 1) Habilitar reloj GPIOA */

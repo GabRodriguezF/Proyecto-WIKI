@@ -48,7 +48,7 @@ const gpio_if_t GPIO_STM32 = {
         .right = motor_right_impl,
     },
     .rgb = {
-        .init     = GPIOB_Init_PB12_13_14_Output,
+        .init     = GPIOB_Init_RGB_PWM_Output,
         .r_on     = r_on_impl,
         .r_off    = r_off_impl,
         .g_on     = g_on_impl,

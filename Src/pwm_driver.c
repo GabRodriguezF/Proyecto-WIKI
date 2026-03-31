@@ -203,6 +203,8 @@ void pwm_tim1_pa8_init(uint32_t pwm_hz)
     TIM1->CCMR1 |=  TIM_CCMR1_OC1PE;            // preload enable
 
     // Habilitar salida CH1
+    TIM1->CCER |= TIM_CCER_CC1NE; // Habilita la salida complementaria en PB13
+
     TIM1->CCER |= TIM_CCER_CC1E;                // enable compare output
 
     // Auto-reload preload enable
