@@ -35,15 +35,15 @@
 #define blink_B()     (GPIOB->ODR ^= 0x00004000U)  // TOGGLE PB14
 
 // Botones
-#define READ_BUTTON_0  (GPIOB->IDR & (1U << 0))	// PB0
-#define READ_BUTTON_1  (GPIOB->IDR & (1U << 1))	// PB1
-#define READ_BUTTON_2  (GPIOB->IDR & (1U << 2))	// PB2
-#define READ_BUTTON_3  (GPIOB->IDR & (1U << 3))	// PB3
-#define READ_BUTTON_4  (GPIOB->IDR & (1U << 4))	// PB4
+#define READ_BUTTON_0  (GPIOC->IDR & (1U << 0))	// PC0
+#define READ_BUTTON_1  (GPIOC->IDR & (1U << 1))	// PC1
+#define READ_BUTTON_2  (GPIOC->IDR & (1U << 2))	// PC2
+#define READ_BUTTON_3  (GPIOC->IDR & (1U << 3))	// PC3
+#define READ_BUTTON_4  (GPIOC->IDR & (1U << 4))	// PC4
 
 void TFT_ctrl_gpio_init(void);
 void GPIOB_Init_PB12_13_14_Output(void);
 void gpio_pa2_pa3_output_init(void);
-void gpio_pb0_pb1_pb2_pb3_pb4_init(void);
+void gpio_pc0_pc1_pc2_pc3_pc4_init(void);
 
 #endif

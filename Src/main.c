@@ -94,7 +94,7 @@ int main(void)
     	GPIO_STM32.rgb.b_on();
     	SYSCLK_STM32.delay_ms(1000); //Delay de 500ms
 		*/
-    	/*------ Practica 2 ------*//*
+    	/*------ Practica 2 ------*/
     	if (GPIO_STM32.btn.btn_0()) {
 			GPIO_STM32.rgb.r_on();  // Encender LED Rojo
 		} else {
@@ -102,9 +102,9 @@ int main(void)
 		}
 
 		// Antirrebote (Debounce) simple
-		SYSCLK_STM32.delay_ms(10);*/
+		SYSCLK_STM32.delay_ms(10);
 
-
+    	/*
         GPIO_STM32.motor.right();
         if (flag_multtimer == 1)
         {
@@ -140,7 +140,7 @@ int main(void)
             }
             
             ili_draw_graph(g_RLS.ye, g_motor.rpm, 100);
-        }
+        }*/
 
 
     }

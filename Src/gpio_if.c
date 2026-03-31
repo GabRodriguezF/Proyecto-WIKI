@@ -60,7 +60,7 @@ const gpio_if_t GPIO_STM32 = {
         .b_toggle = b_tog_impl,
     },
 	.btn = {
-		.init   = gpio_pb0_pb1_pb2_pb3_pb4_init,
+		.init   = gpio_pc0_pc1_pc2_pc3_pc4_init,
 		.btn_0  = btn_0_impl,
 		.btn_1  = btn_1_impl,
 		.btn_2  = btn_2_impl,

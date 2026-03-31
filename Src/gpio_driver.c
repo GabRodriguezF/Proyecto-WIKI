@@ -84,41 +84,29 @@ void gpio_pa2_pa3_output_init(void)
     GPIOA->PUPDR &= ~((3U << (2*2)) | (3U << (3*2)));
 }
 
-void gpio_pb0_pb1_pb2_pb3_pb4_init(void)
+void gpio_pc0_pc1_pc2_pc3_pc4_init(void)
 {
-    /* 1) Habilitar reloj de GPIOB (AHB1) */
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+    /* 1) Habilitar reloj de GPIOC (AHC1) */
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
     (void)RCC->AHB1ENR;   // lectura dummy para asegurar el habilitado
 
-    /* 2) Modo: Output (00) para PB0, PB1, PB2, PB3, PB4 */
+    /* 2) Modo: Input (00) para PC0, PC1, PC2, PC3, PC4 */
     // Limpiar bits MODER: (2 bits por pin)
-    GPIOB->MODER &= ~((3U << (0U*2U)) |
+    GPIOC->MODER &= ~((3U << (0U*2U)) |
                       (3U << (1U*2U)) |
                       (3U << (2U*2U)) |
 					  (3U << (3U*2U)) |
 					  (3U << (4U*2U)));
 
     /* 3) Tipo de salida: Push-Pull (0) */
-    GPIOB->OTYPER &= ~((1U << 0U) |
+    GPIOC->OTYPER &= ~((1U << 0U) |
                        (1U << 1U) |
                        (1U << 2U) |
 					   (1U << 3U) |
 					   (1U << 4U));
 
-    /* 4) Velocidad: Medium (01) (ajusta si quieres High/VeryHigh) *//*
-    GPIOB->OSPEEDR &= ~((3U << (0U*2U)) |
-                        (3U << (1U*2U)) |
-						(3U << (2U*2U)) |
-						(3U << (3U*2U)) |
-                        (3U << (4U*2U)));
-    GPIOB->OSPEEDR |=  ((1U << (0U*2U)) |
-                        (1U << (1U*2U)) |
-						(1U << (2U*2U)) |
-						(1U << (3U*2U)) |
-                        (1U << (4U*2U)));*/
-
-    /* 5) Pull-up/Pull-down: None (00) */
-    GPIOB->PUPDR &= ~((3U << (0U*2U)) |
+    /* 4) Pull-up/Pull-down: None (00) */
+    GPIOC->PUPDR &= ~((3U << (0U*2U)) |
                       (3U << (1U*2U)) |
 					  (3U << (2U*2U)) |
 					  (3U << (3U*2U)) |
