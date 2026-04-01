@@ -34,20 +34,32 @@ uint8_t flag_cMotor = 0;
 uint32_t intentos = 0;
 
 int AntiRebote(gpio_btn_read_fn_t leer_btn);
+void MostrarColor(uint8_t color);
+void ApagarTodo();
+uint8_t LeerBoton();
 
 
 void FPU_Enable(void);
 void clear_fault_flags(void);
 void ini_pantalla(void);
 
+
 int main(void)
 {
     // Locales de arranque
     clear_fault_flags();
     FPU_Enable();
-    uint8_t aumento_vel = 0;
-    uint8_t estado = 0;
-    uint8_t patron_elegido = 0;
+    //uint8_t aumento_vel = 0;
+    //uint8_t estado = 0;
+    //uint8_t patron_elegido = 0;
+
+    //Simon dice
+
+	#define MAX_PASOS 100
+	uint8_t secuencia[MAX_PASOS];
+	uint8_t nivel_actual = 0;
+	uint8_t paso_jugador = 0;
+	uint8_t estado_juego = 0;
 
     SYSCLK_STM32.init();
     ini_pantalla();
@@ -132,7 +144,7 @@ int main(void)
 		SYSCLK_STM32.delay_ms(10);
 		*/
 
-    	/*------ Practica 4 ------*/
+    	/*------ Practica 4 ------*//*
     	if (AntiRebote(GPIO_STM32.btn.btn_0)) {
     		while(GPIO_STM32.btn.btn_0());
     		estado = 1;
@@ -181,9 +193,9 @@ int main(void)
 				GPIO_STM32.rgb.b_off();
 				// Aquí ejecutas el patron_elegido sin el parpadeo verde
 				switch (patron_elegido) {
-					case 1: GPIO_STM32.rgb.r_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.r_off(); SYSCLK_STM32.delay_ms(100); break;
-					case 2: GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.g_off(); SYSCLK_STM32.delay_ms(100); break;
-					case 3: GPIO_STM32.rgb.b_on(); SYSCLK_STM32.delay_ms(100); GPIO_STM32.rgb.b_off(); SYSCLK_STM32.delay_ms(100); break;
+					case 1: GPIO_STM32.rgb.r_on(); SYSCLK_STM32.delay_ms(50); GPIO_STM32.rgb.r_off(); SYSCLK_STM32.delay_ms(50); break;
+					case 2: GPIO_STM32.rgb.g_on(); SYSCLK_STM32.delay_ms(50); GPIO_STM32.rgb.g_off(); SYSCLK_STM32.delay_ms(50); break;
+					case 3: GPIO_STM32.rgb.b_on(); SYSCLK_STM32.delay_ms(50); GPIO_STM32.rgb.b_off(); SYSCLK_STM32.delay_ms(50); break;
 				}
 
 				// Botón 4 para detener y volver a 0
@@ -192,7 +204,87 @@ int main(void)
 					estado = 0;
 				}
 				break;
+    	}*/
+
+    	/*------ Practica 5 ------*/
+    	switch (estado_juego) {
+			case 0: // Espera
+				uint32_t semilla = 0;
+				while(!AntiRebote(GPIO_STM32.btn.btn_0)) {
+					semilla++;
+					if (semilla % 1000000 == 0) {
+						GPIO_STM32.rgb.r_toggle();
+						GPIO_STM32.rgb.g_toggle();
+					}
+				}
+
+				while(GPIO_STM32.btn.btn_0()); // Suelta el boton
+
+				srand(semilla); // Numero aleatorio de 1 a 3
+
+				nivel_actual = 1;
+				secuencia[0] = (rand() % 3) + 1;
+				GPIO_STM32.rgb.r_off(); // Apagamos el LED
+				GPIO_STM32.rgb.g_off();
+				estado_juego = 1;
+				break;
+
+    	    case 1: // Mostrar secuencia a repetir
+    	    	ApagarTodo();
+    	        SYSCLK_STM32.delay_ms(500);
+
+    	        for (int i = 0; i < nivel_actual; i++) {
+    	            MostrarColor(secuencia[i]);
+    	            SYSCLK_STM32.delay_ms(400);  // Tiempo encendido
+    	            ApagarTodo();
+    	            SYSCLK_STM32.delay_ms(200);  // Tiempo entre colores
+    	        }
+    	        paso_jugador = 0;
+    	        estado_juego = 2;
+    	        break;
+
+    	    case 2: // Jugador
+    	        uint8_t boton_presionado = LeerBoton();
+
+    	        if (boton_presionado != 0) {
+    	            if (boton_presionado == secuencia[paso_jugador]) {
+    	                // CORRECTO
+    	                MostrarColor(boton_presionado);
+    	                SYSCLK_STM32.delay_ms(200);
+    	                ApagarTodo();
+
+    	                paso_jugador++;
+
+    	                // Se completo?
+    	                if (paso_jugador == nivel_actual) {
+    	                    nivel_actual++;
+    	                    // Agrgar un color y subir el lv
+    	                    secuencia[nivel_actual - 1] = (rand() % 3) + 1;
+    	                    SYSCLK_STM32.delay_ms(500);
+    	                    estado_juego = 1;
+    	                }
+    	            } else {
+    	                // GAME OVER
+    	                estado_juego = 3;
+    	            }
+    	        }
+
+    	        // Reset B4
+    	        if (AntiRebote(GPIO_STM32.btn.btn_4)) estado_juego = 0;
+    	        break;
+
+    	    case 3: // GAME OVER
+    	        GPIO_STM32.rgb.r_toggle(); // LED rojo ON
+    	        SYSCLK_STM32.delay_ms(200);
+    	        if (AntiRebote(GPIO_STM32.btn.btn_4)) { // Hasta que se resetee
+    	            while(GPIO_STM32.btn.btn_4());
+    	            estado_juego = 0;
+    	            GPIO_STM32.rgb.r_off();
+    	        }
+    	        SYSCLK_STM32.delay_ms(200);
+    	        break;
     	}
+
 
     	/*
         GPIO_STM32.motor.right();
@@ -235,6 +327,27 @@ int main(void)
 
     }
 }
+
+void MostrarColor(uint8_t color) {
+    ApagarTodo();
+    if (color == 1) GPIO_STM32.rgb.r_on();
+    if (color == 2) GPIO_STM32.rgb.g_on();
+    if (color == 3) GPIO_STM32.rgb.b_on();
+}
+
+void ApagarTodo() {
+    GPIO_STM32.rgb.r_off();
+    GPIO_STM32.rgb.g_off();
+    GPIO_STM32.rgb.b_off();
+}
+
+uint8_t LeerBoton() {
+    if (AntiRebote(GPIO_STM32.btn.btn_1)) { while(GPIO_STM32.btn.btn_1()); return 1; }
+    if (AntiRebote(GPIO_STM32.btn.btn_2)) { while(GPIO_STM32.btn.btn_2()); return 2; }
+    if (AntiRebote(GPIO_STM32.btn.btn_3)) { while(GPIO_STM32.btn.btn_3()); return 3; }
+    return 0;
+}
+
 int AntiRebote(gpio_btn_read_fn_t leer_btn)
 {
     // El botón parece estar presionado

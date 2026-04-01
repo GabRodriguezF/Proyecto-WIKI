@@ -1,6 +1,9 @@
-../Src/main.c:43:5:main	25
-../Src/main.c:237:5:AntiRebote	3
-../Src/main.c:255:6:ini_pantalla	1
-../Src/main.c:267:6:FPU_Enable	1
-../Src/main.c:273:6:clear_fault_flags	1
-../Src/main.c:279:6:TIM4_IRQHandler	12
+../Src/main.c:47:5:main	15
+../Src/main.c:331:6:MostrarColor	4
+../Src/main.c:338:6:ApagarTodo	1
+../Src/main.c:344:9:LeerBoton	7
+../Src/main.c:351:5:AntiRebote	3
+../Src/main.c:369:6:ini_pantalla	1
+../Src/main.c:381:6:FPU_Enable	1
+../Src/main.c:387:6:clear_fault_flags	1
+../Src/main.c:393:6:TIM4_IRQHandler	12
